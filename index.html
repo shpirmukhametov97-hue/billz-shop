@@ -123,6 +123,7 @@ footer{max-width:1180px;margin:24px auto 0;padding:0 16px;color:var(--muted);fon
     <label for="f-phone"><span id="t-phone"></span><input id="f-phone" type="tel" placeholder="+998"></label>
     <label for="f-addr"><span id="t-addr"></span><input id="f-addr"></label>
     <label for="f-pay"><span id="t-pay"></span><select id="f-pay"><option value="cash"></option><option value="card"></option><option value="bank"></option></select></label>
+    <p class="note" id="pay-note" hidden></p>
     <label for="f-inn" id="l-inn" hidden><span id="t-inn"></span><input id="f-inn" inputmode="numeric"></label>
     <label for="f-com"><span id="t-com"></span><textarea id="f-com" rows="2"></textarea></label>
     <button class="open" id="submit" disabled></button>
@@ -141,7 +142,7 @@ const T={
 ru:{h1:"Оборудование для магазина",sub:"Моноблоки, принтеры, сканеры, весы и расходники. Цены в $, гарантия 1 год по серийному номеру. Товар под заказ привозим примерно за 1 день.",
  fiz:"Физ. лицо",yur:"Юр. лицо, с НДС",all:"Все",inStock:n=>`В наличии: ${n} шт`,low:" · осталось мало",order:"Под заказ, примерно 1 день",none:"Нет в наличии",noBtn:"Нет",
  toCart:"В корзину",orderBtn:"Заказать",specs:"Характеристики",ask:"Цена по запросу",over:n=>`${n} шт под заказ, привезём примерно за 1 день`,max:n=>`Больше нет: всего ${n} шт`,
- empty:"Корзина пуста",inCart:n=>`${n} шт в корзине`,checkout:"Оформить заказ",yours:"Ваш заказ",total:"Итого",close:"Закрыть ✕",phone:"Телефон клиента",shop:"Клиент: магазин / компания",addr:"Адрес доставки",pay:"Оплата",payO:["Наличные","Payme / Click / карта","Перечисление"],submit:"Отправить заявку",notTg:"Откройте витрину через бота BILLZ, чтобы отправить заявку.",inn:"ИНН компании",
+ empty:"Корзина пуста",inCart:n=>`${n} шт в корзине`,checkout:"Оформить заказ",yours:"Ваш заказ",total:"Итого",close:"Закрыть ✕",phone:"Телефон клиента",shop:"Клиент: магазин / компания",addr:"Адрес доставки",pay:"Оплата",payO:["Наличные","Payme / Click / Paynet","Перечисление"],payNote:"🧾 После отправки бот попросит фото чека об оплате. Без чека заявка не уйдёт в работу.",submit:"Отправить заявку",notTg:"Откройте витрину через бота BILLZ, чтобы отправить заявку.",inn:"ИНН компании",
  com:"Комментарий",comPh:"Срочность, нужен счёт-фактура и т.п.",send:"Скопировать заказ и открыть топик «Заказы»",joinQ:"Ещё не в группе заказов BILLZ?",join:"Сначала вступите в группу",share:"Отправить в другой чат Telegram",copy:"Скопировать текст заказа",copied:"Скопировано ✓",copyFail:"Не удалось скопировать",
  hintNo:"Укажите магазин клиента и телефон.",hintOk:"Заявка уйдёт в группу заказов, статус придёт вам в бота.",
  each:p=>`${p} за шт`,underOrder:n=>`${n} под заказ`,plusAsk:" + по запросу",cartEmpty:"Корзина пуста.",
@@ -151,7 +152,7 @@ ru:{h1:"Оборудование для магазина",sub:"Моноблок�
 uz:{h1:"Do‘kon uchun uskunalar",sub:"Monobloklar, printerlar, skanerlar, tarozilar va sarf materiallari. Narxlar $ da, seriya raqami bo‘yicha 1 yil kafolat. Buyurtma asosidagi tovar taxminan 1 kunda keltiriladi.",
  fiz:"Jismoniy shaxs",yur:"Yuridik shaxs, QQS bilan",all:"Hammasi",inStock:n=>`Mavjud: ${n} dona`,low:" · kam qoldi",order:"Buyurtma asosida, taxminan 1 kun",none:"Mavjud emas",noBtn:"Yo‘q",
  toCart:"Savatga",orderBtn:"Buyurtma",specs:"Xususiyatlari",ask:"Narxi so‘rov bo‘yicha",over:n=>`${n} dona buyurtma asosida, taxminan 1 kunda keltiramiz`,max:n=>`Boshqa yo‘q: jami ${n} dona`,
- empty:"Savat bo‘sh",inCart:n=>`Savatda ${n} dona`,checkout:"Buyurtma berish",yours:"Buyurtmangiz",total:"Jami",close:"Yopish ✕",phone:"Mijoz telefoni",shop:"Mijoz: do‘kon / kompaniya",addr:"Yetkazish manzili",pay:"To‘lov",payO:["Naqd","Payme / Click / karta","O‘tkazma"],submit:"Arizani yuborish",notTg:"Arizani yuborish uchun vitrinani BILLZ boti orqali oching.",inn:"Kompaniya STIR",
+ empty:"Savat bo‘sh",inCart:n=>`Savatda ${n} dona`,checkout:"Buyurtma berish",yours:"Buyurtmangiz",total:"Jami",close:"Yopish ✕",phone:"Mijoz telefoni",shop:"Mijoz: do‘kon / kompaniya",addr:"Yetkazish manzili",pay:"To‘lov",payO:["Naqd","Payme / Click / Paynet","O‘tkazma"],payNote:"🧾 Yuborgandan so‘ng bot to‘lov cheki rasmini so‘raydi. Cheksiz ariza ishga olinmaydi.",submit:"Arizani yuborish",notTg:"Arizani yuborish uchun vitrinani BILLZ boti orqali oching.",inn:"Kompaniya STIR",
  com:"Izoh",comPh:"Shoshilinchmi, hisob-faktura kerakmi va h.k.",send:"Buyurtmani nusxalash va «Buyurtmalar» mavzusini ochish",joinQ:"BILLZ buyurtmalar guruhida hali yo‘qmisiz?",join:"Avval guruhga qo‘shiling",share:"Telegramdagi boshqa chatga yuborish",copy:"Buyurtma matnini nusxalash",copied:"Nusxalandi ✓",copyFail:"Nusxalab bo‘lmadi",
  hintNo:"Mijoz do‘koni va telefonini kiriting.",hintOk:"Ariza buyurtmalar guruhiga yuboriladi, holati sizga botda keladi.",
  each:p=>`1 dona: ${p}`,underOrder:n=>`${n} dona buyurtma asosida`,plusAsk:" + so‘rov bo‘yicha",cartEmpty:"Savat bo‘sh.",
@@ -193,6 +194,7 @@ function renderStatic(){
   set("#t-h1",t.h1);set("#t-sub",t.sub);set("#m-fiz",t.fiz);set("#m-yur",t.yur);set("#openCart",t.checkout);set("#ct",t.yours);set("#t-tot",t.total);set("#close",t.close);
   set("#t-phone",t.phone);set("#t-shop",t.shop);set("#t-addr",t.addr);set("#t-pay",t.pay);set("#t-inn",t.inn);set("#t-com",t.com);set("#submit",t.submit);
   [...$("#f-pay").options].forEach((o,k)=>o.textContent=t.payO[k]);
+  $("#pay-note").textContent=t.payNote; $("#pay-note").hidden=$("#f-pay").value!=="card";
   $("#f-com").placeholder=t.comPh; $("#foot").textContent=t.foot(STOCK_DATE); document.title=t.h1+" · BILLZ";
   $("#l-ru").setAttribute("aria-pressed",lang==="ru");$("#l-uz").setAttribute("aria-pressed",lang==="uz");
   $("#m-fiz").setAttribute("aria-pressed",mode==="fiz");$("#m-yur").setAttribute("aria-pressed",mode==="yur");$("#l-inn").hidden=mode!=="yur";
@@ -281,6 +283,7 @@ $("#sheet").onclick=e=>{if(e.target.id==="sheet")$("#sheet").classList.remove("o
 document.addEventListener("keydown",e=>{if(e.key==="Escape"){$("#sheet").classList.remove("on");$("#pd").classList.remove("on")} if(e.key==="Enter"){const op=e.target.closest&&e.target.closest("[data-open]"); if(op)openPd(op.dataset.open)}});
 ["#f-phone","#f-shop","#f-com","#f-inn","#f-addr"].forEach(s=>$(s).addEventListener("input",updSend));
 $("#submit").onclick=submit;
+$("#f-pay").addEventListener("change",()=>{$("#pay-note").hidden=$("#f-pay").value!=="card"});
 function store(k,v){try{localStorage.setItem(k,v)}catch(e){}}
 $("#m-fiz").onclick=()=>{mode="fiz";store("billz-mode",mode);renderAll()};
 $("#m-yur").onclick=()=>{mode="yur";store("billz-mode",mode);renderAll()};
