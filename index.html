@@ -99,12 +99,15 @@ footer{max-width:1180px;margin:24px auto 0;padding:0 16px;color:var(--muted);fon
 .payact{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .payact .ghost{font-size:13px;padding:9px}
 [hidden]{display:none!important}
+.rate{margin:10px 0 0;font:600 14px var(--body);color:var(--ink);font-variant-numeric:tabular-nums}
+.rate span{color:var(--muted);font-weight:500}
 </style>
 </head>
 <body>
 <header>
   <div class="top"><h1 id="t-h1"></h1><div class="lang" role="group" aria-label="Язык / Til"><button id="l-ru">RU</button><button id="l-uz">UZ</button></div></div>
   <p class="sub" id="t-sub"></p>
+  <p class="rate" id="rate" hidden></p>
   <div class="mode" role="group"><button id="m-fiz"></button><button id="m-yur"></button></div>
 </header>
 <div class="bar"><div class="bar-in" id="chips"></div></div>
@@ -149,9 +152,11 @@ const SNAPSHOT=[{"k": "LPS156", "n": {"ru": "Моноблок LPS 156 i5 6th", "
 const toItem=x=>({sku:x.k,n:x.n,c:x.c,q:Number(x.q)||0,fiz:x.fiz,yur:x.yur,st:x.st,img:(MEDIA[x.k]||{}).img||null,sp:(MEDIA[x.k]||{}).sp||{ru:[],uz:[]}});
 let ITEMS=SNAPSHOT.map(toItem);
 let STOCK_DATE="18.11.2026";
+let RATE=null;
+const sumF=v=>Math.round(v).toLocaleString("ru-RU")+" сум";
 const T={
 ru:{h1:"Оборудование для магазина",sub:"Моноблоки, принтеры, сканеры, весы и расходники. Цены в $, гарантия 1 год по серийному номеру. Товар под заказ привозим примерно за 1 день.",
- fiz:"Физ. лицо",yur:"Юр. лицо, с НДС",all:"Все",inStock:n=>`В наличии: ${n} шт`,low:" · осталось мало",order:"Под заказ, примерно 1 день",none:"Нет в наличии",noBtn:"Нет",
+ rateL:"Курс на сегодня",fiz:"Физ. лицо",yur:"Юр. лицо, с НДС",all:"Все",inStock:n=>`В наличии: ${n} шт`,low:" · осталось мало",order:"Под заказ, примерно 1 день",none:"Нет в наличии",noBtn:"Нет",
  toCart:"В корзину",orderBtn:"Заказать",specs:"Характеристики",ask:"Цена по запросу",over:n=>`${n} шт под заказ, привезём примерно за 1 день`,max:n=>`Больше нет: всего ${n} шт`,
  empty:"Корзина пуста",inCart:n=>`${n} шт в корзине`,checkout:"Оформить заказ",yours:"Ваш заказ",total:"Итого",close:"Закрыть ✕",phone:"Телефон клиента",shop:"Клиент: магазин / компания",addr:"Адрес доставки",pay:"Оплата",payO:["Наличные","Payme / Click / Paynet","Перечисление"],pick:"Кто заберёт (обязательно)",hintPick:"Оплата наличными: укажите, кто заберёт.",payNote:"Покажите клиенту QR или отправьте ссылку. После отправки заявки бот попросит фото чека, без него заявка не уйдёт в работу.",payOpen:"🔗 Открыть ссылку",payCopy:"📋 Скопировать ссылку",copied2:"Скопировано ✓",submit:"Отправить заявку",notTg:"Откройте витрину через бота BILLZ, чтобы отправить заявку.",inn:"ИНН компании",
  com:"Комментарий",comPh:"Срочность, нужен счёт-фактура и т.п.",send:"Скопировать заказ и открыть топик «Заказы»",joinQ:"Ещё не в группе заказов BILLZ?",join:"Сначала вступите в группу",share:"Отправить в другой чат Telegram",copy:"Скопировать текст заказа",copied:"Скопировано ✓",copyFail:"Не удалось скопировать",
@@ -161,7 +166,7 @@ ru:{h1:"Оборудование для магазина",sub:"Моноблок�
  oHead:"🛒 Заказ с витрины оборудования BILLZ",oFiz:"Покупатель: физ. лицо",oYur:"Покупатель: юр. лицо, цены с НДС",oAsk:"цена по запросу",oUnder:n=>`(под заказ ${n} шт)`,oTot:"Итого",oAskTot:" + позиции с ценой по запросу",
  oName:"Имя",oPhone:"Телефон",oShop:"Магазин",oInn:"ИНН",oCom:"Комментарий"},
 uz:{h1:"Do‘kon uchun uskunalar",sub:"Monobloklar, printerlar, skanerlar, tarozilar va sarf materiallari. Narxlar $ da, seriya raqami bo‘yicha 1 yil kafolat. Buyurtma asosidagi tovar taxminan 1 kunda keltiriladi.",
- fiz:"Jismoniy shaxs",yur:"Yuridik shaxs, QQS bilan",all:"Hammasi",inStock:n=>`Mavjud: ${n} dona`,low:" · kam qoldi",order:"Buyurtma asosida, taxminan 1 kun",none:"Mavjud emas",noBtn:"Yo‘q",
+ rateL:"Bugungi kurs",fiz:"Jismoniy shaxs",yur:"Yuridik shaxs, QQS bilan",all:"Hammasi",inStock:n=>`Mavjud: ${n} dona`,low:" · kam qoldi",order:"Buyurtma asosida, taxminan 1 kun",none:"Mavjud emas",noBtn:"Yo‘q",
  toCart:"Savatga",orderBtn:"Buyurtma",specs:"Xususiyatlari",ask:"Narxi so‘rov bo‘yicha",over:n=>`${n} dona buyurtma asosida, taxminan 1 kunda keltiramiz`,max:n=>`Boshqa yo‘q: jami ${n} dona`,
  empty:"Savat bo‘sh",inCart:n=>`Savatda ${n} dona`,checkout:"Buyurtma berish",yours:"Buyurtmangiz",total:"Jami",close:"Yopish ✕",phone:"Mijoz telefoni",shop:"Mijoz: do‘kon / kompaniya",addr:"Yetkazish manzili",pay:"To‘lov",payO:["Naqd","Payme / Click / Paynet","O‘tkazma"],pick:"Kim olib ketadi (majburiy)",hintPick:"Naqd to‘lov: kim olib ketishini kiriting.",payNote:"Mijozga QR ni ko‘rsating yoki havolani yuboring. Arizadan so‘ng bot chek rasmini so‘raydi, cheksiz ariza ishga olinmaydi.",payOpen:"🔗 Havolani ochish",payCopy:"📋 Havolani nusxalash",copied2:"Nusxalandi ✓",submit:"Arizani yuborish",notTg:"Arizani yuborish uchun vitrinani BILLZ boti orqali oching.",inn:"Kompaniya STIR",
  com:"Izoh",comPh:"Shoshilinchmi, hisob-faktura kerakmi va h.k.",send:"Buyurtmani nusxalash va «Buyurtmalar» mavzusini ochish",joinQ:"BILLZ buyurtmalar guruhida hali yo‘qmisiz?",join:"Avval guruhga qo‘shiling",share:"Telegramdagi boshqa chatga yuborish",copy:"Buyurtma matnini nusxalash",copied:"Nusxalandi ✓",copyFail:"Nusxalab bo‘lmadi",
@@ -207,6 +212,7 @@ function renderStatic(){
   [...$("#f-pay").options].forEach((o,k)=>o.textContent=t.payO[k]);
   $("#pay-note").textContent=t.payNote; set("#pay-open",t.payOpen); set("#pay-copy",t.payCopy); set("#t-pick",t.pick); syncPay();
   $("#f-com").placeholder=t.comPh; $("#foot").textContent=t.foot(STOCK_DATE); document.title=t.h1+" · BILLZ";
+  if(RATE&&RATE.rate){$("#rate").hidden=false;$("#rate").innerHTML=esc(t.rateL)+": "+sumF(RATE.rate)+' <span>· bank.uz, '+esc(RATE.date||"")+"</span>"}
   $("#l-ru").setAttribute("aria-pressed",lang==="ru");$("#l-uz").setAttribute("aria-pressed",lang==="uz");
   $("#m-fiz").setAttribute("aria-pressed",mode==="fiz");$("#m-yur").setAttribute("aria-pressed",mode==="yur");$("#l-inn").hidden=mode!=="yur";
 }
@@ -252,7 +258,7 @@ function underN(l){return !capped(l.i)&&l.n>l.i.q?l.n-Math.max(l.i.q,0):0}
 function renderCart(){
   const Ls=lines(), cnt=Ls.reduce((a,l)=>a+l.n,0), t=L();
   $("#cnt").textContent=cnt?t.inCart(cnt):t.empty;
-  $("#sum").textContent=fmt(total())+(unpriced()?" +":""); $("#tot").textContent=fmt(total())+(unpriced()?t.plusAsk:"");
+  $("#sum").textContent=fmt(total())+(unpriced()?" +":""); $("#tot").textContent=fmt(total())+(unpriced()?t.plusAsk:"")+(RATE&&RATE.rate&&total()?" · ≈ "+sumF(total()*RATE.rate):"");
   $("#openCart").disabled=!cnt;
   $("#lines").innerHTML=Ls.length?Ls.map(l=>{const u=underN(l),k=esc(key(l.i)),full=capped(l.i)&&l.n>=l.i.q;
     return `<div class="line"><span>${esc(nm(l.i))} × ${l.n}</span><b>${l.p==null?"—":fmt(l.s)}</b><small>${l.p==null?t.ask:t.each(fmt(l.p))}${u?" · "+t.underOrder(u):""}</small><span><span class="step" style="display:inline-flex"><button data-a="-" data-s="${k}" aria-label="−">−</button><span>${l.n}</span><button data-a="+" data-s="${k}" aria-label="+" ${full?"disabled":""}>+</button></span></span></div>`}).join(""):`<p class="hint">${t.cartEmpty}</p>`;
@@ -323,6 +329,7 @@ if(CATALOG_URL.startsWith("http")){
     if(cur!=="*"&&!cats.includes(cur)) cur="*";
     for(const k in cart){const i=ITEMS.find(x=>key(x)===k); if(!i) delete cart[k]; else if(capped(i)) {cart[k]=Math.min(cart[k],i.q); if(!cart[k]) delete cart[k];}}
     if(d.updated) STOCK_DATE=d.updated;
+    if(d.rate&&d.rate.rate) RATE=d.rate;
     renderAll();
   }).catch(()=>{});
 }
