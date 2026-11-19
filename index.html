@@ -144,8 +144,6 @@ footer{max-width:1180px;margin:24px auto 0;padding:0 16px;color:var(--muted);fon
 
 <div class="pd" id="pd" role="dialog" aria-modal="true" aria-labelledby="pd-t"><div class="pd-in" id="pd-in"></div></div>
 
-<div class="scan" id="scan" hidden><div class="scan-in"><div id="scan-t" class="scan-t"></div><div id="scan-v"></div><p class="hint" id="scan-msg"></p><button type="button" class="ghost" id="scan-x"></button></div></div>
-
 <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="ct">
   <div class="panel">
     <button class="x" id="close"></button>
@@ -192,13 +190,13 @@ function renderSn(){
   const cs=$("#f-hand").value==="cs"; $("#t-snh").textContent=cs?t.snhCs:t.snh;
   $("#sn-list").innerHTML=cs?"":keys.map(k=>{const it=ITEMS.find(x=>key(x)===k), a=SN[k];
     return a.map((u,i)=>`<div class="snrow2"><span class="lbl">${esc(t.snUnit(nm(it),i+1,a.length))}</span>
-      <label class="snbtn ${u.photo?"ok":""}">${u.preview?`<img src="${u.preview}" alt="">`:""}<span>${esc(u.state==="up"?t.snUp:u.state==="err"?t.snErr:u.photo?t.snPhoto:t.snAdd)}</span>${u.photo?`<small>${esc(t.snRe)}</small>`:""}<input type="file" accept="image/*" hidden data-snph="${esc(k)}|${i}"></label></div>`).join("")}).join("");
+      <label class="snbtn ${u.photo?"ok":""}">${u.preview?`<img src="${u.preview}" alt="">`:""}<span>${esc(u.state==="up"?t.snUp:u.state==="err"?t.snErr:u.photo?t.snPhoto:t.snAdd)}</span>${u.photo?`<small>${esc(t.snRe)}</small>`:""}<input type="file" accept="image/*" capture="environment" hidden data-snph="${esc(k)}|${i}"></label></div>`).join("")}).join("");
 }
 
 const sumF=v=>Math.round(v).toLocaleString("ru-RU")+" сум";
 const T={
 ru:{h1:"Оборудование для магазина",sub:"Моноблоки, принтеры, сканеры, весы и расходники. Цены в $, гарантия 1 год по серийному номеру. Товар под заказ привозим примерно за 1 день.",
- rateL:"Курс на сегодня",sn:"Штрих-коды для гарантии",hand:"Кто передаёт товар клиенту",handO:["Я, менеджер — прикреплю фото","Кассир / CS — добавят сами"],snh:"Сфотографируйте штрих-код (серийный номер) каждого устройства.",snhCs:"Фото штрих-кодов добавит Кассир / CS при выдаче.",snAdd:"📎 Прикрепить фото штрих-кода",snRe:"🔄 Заменить фото",snUnit:(n,i,c)=>`${n} — шт ${i} из ${c}`,snPh:"Серийный номер",snPhoto:"✅ Фото штрих-кода прикреплено",snUp:"Загружаю фото…",snErr:"Не удалось загрузить фото",scanT:"Наведите камеру на штрих-код",scanX:"Закрыть",scanErr:"Камера недоступна. Введите номер вручную или прикрепите фото (📎).",hintSn:"Прикрепите фото штрих-кодов всех устройств.",fiz:"Физ. лицо",yur:"Юр. лицо, с НДС",all:"Все",inStock:n=>`В наличии: ${n} шт`,low:" · осталось мало",order:"Под заказ, примерно 1 день",none:"Нет в наличии",noBtn:"Нет",
+ rateL:"Курс на сегодня",sn:"Штрих-коды для гарантии",hand:"Кто передаёт товар клиенту",handO:["Я, менеджер — прикреплю фото","Кассир / CS — добавят сами"],snh:"Сфотографируйте штрих-код (серийный номер) каждого устройства.",snhCs:"Фото штрих-кодов добавит Кассир / CS при выдаче.",snAdd:"📷 Сфотографировать штрих-код",snRe:"🔄 Переснять",snUnit:(n,i,c)=>`${n} — шт ${i} из ${c}`,snPh:"Серийный номер",snPhoto:"✅ Фото штрих-кода прикреплено",snUp:"Загружаю фото…",snErr:"Не удалось загрузить фото",scanT:"Наведите камеру на штрих-код",scanX:"Закрыть",scanErr:"Камера недоступна. Введите номер вручную или прикрепите фото (📎).",hintSn:"Прикрепите фото штрих-кодов всех устройств.",fiz:"Физ. лицо",yur:"Юр. лицо, с НДС",all:"Все",inStock:n=>`В наличии: ${n} шт`,low:" · осталось мало",order:"Под заказ, примерно 1 день",none:"Нет в наличии",noBtn:"Нет",
  toCart:"В корзину",orderBtn:"Заказать",specs:"Характеристики",ask:"Цена по запросу",over:n=>`${n} шт под заказ, привезём примерно за 1 день`,max:n=>`Больше нет: всего ${n} шт`,
  empty:"Корзина пуста",inCart:n=>`${n} шт в корзине`,checkout:"Оформить заказ",yours:"Ваш заказ",total:"Итого",close:"Закрыть ✕",phone:"Телефон клиента",shop:"Клиент: магазин / компания",addr:"Адрес доставки",pay:"Оплата",payO:["Наличные","Payme / Click / Paynet","Перечисление"],pick:"Кто заберёт (обязательно)",hintPick:"Оплата наличными: укажите, кто заберёт.",payNote:"Покажите клиенту QR или отправьте ссылку. После оплаты прикрепите чек: без него заявку не отправить.",payOpen:"🔗 Открыть ссылку",rc:"📎 Прикрепить чек об оплате",rcUp:"Загружаю чек…",rcOk:"✅ Чек прикреплён",rcErr:"Не удалось загрузить чек. Попробуйте ещё раз.",rcDel:"Удалить",hintRc:"Прикрепите чек об оплате, чтобы отправить заявку.",payCopy:"📋 Скопировать ссылку",copied2:"Скопировано ✓",submit:"Отправить заявку",notTg:"Откройте витрину через бота BILLZ, чтобы отправить заявку.",inn:"ИНН компании",
  com:"Комментарий",comPh:"Срочность, нужен счёт-фактура и т.п.",send:"Скопировать заказ и открыть топик «Заказы»",joinQ:"Ещё не в группе заказов BILLZ?",join:"Сначала вступите в группу",share:"Отправить в другой чат Telegram",copy:"Скопировать текст заказа",copied:"Скопировано ✓",copyFail:"Не удалось скопировать",
@@ -208,7 +206,7 @@ ru:{h1:"Оборудование для магазина",sub:"Моноблок�
  oHead:"🛒 Заказ с витрины оборудования BILLZ",oFiz:"Покупатель: физ. лицо",oYur:"Покупатель: юр. лицо, цены с НДС",oAsk:"цена по запросу",oUnder:n=>`(под заказ ${n} шт)`,oTot:"Итого",oAskTot:" + позиции с ценой по запросу",
  oName:"Имя",oPhone:"Телефон",oShop:"Магазин",oInn:"ИНН",oCom:"Комментарий"},
 uz:{h1:"Do‘kon uchun uskunalar",sub:"Monobloklar, printerlar, skanerlar, tarozilar va sarf materiallari. Narxlar $ da, seriya raqami bo‘yicha 1 yil kafolat. Buyurtma asosidagi tovar taxminan 1 kunda keltiriladi.",
- rateL:"Bugungi kurs",sn:"Kafolat uchun shtrix-kodlar",hand:"Tovarni mijozga kim topshiradi",handO:["Men, menejer — rasm biriktiraman","Kassir / CS — o‘zlari qo‘shadi"],snh:"Har bir qurilmaning shtrix-kodini (seriya raqamini) suratga oling.",snhCs:"Shtrix-kod rasmlarini Kassir / CS topshirishda qo‘shadi.",snAdd:"📎 Shtrix-kod rasmini biriktirish",snRe:"🔄 Rasmni almashtirish",snUnit:(n,i,c)=>`${n} — ${c} tadan ${i}-si`,snPh:"Seriya raqami",snPhoto:"✅ Shtrix-kod rasmi biriktirildi",snUp:"Rasm yuklanmoqda…",snErr:"Rasmni yuklab bo‘lmadi",scanT:"Kamerani shtrix-kodga qarating",scanX:"Yopish",scanErr:"Kamera mavjud emas. Raqamni qo‘lda kiriting yoki rasm biriktiring (📎).",hintSn:"Barcha qurilmalarning shtrix-kod rasmlarini biriktiring.",fiz:"Jismoniy shaxs",yur:"Yuridik shaxs, QQS bilan",all:"Hammasi",inStock:n=>`Mavjud: ${n} dona`,low:" · kam qoldi",order:"Buyurtma asosida, taxminan 1 kun",none:"Mavjud emas",noBtn:"Yo‘q",
+ rateL:"Bugungi kurs",sn:"Kafolat uchun shtrix-kodlar",hand:"Tovarni mijozga kim topshiradi",handO:["Men, menejer — rasm biriktiraman","Kassir / CS — o‘zlari qo‘shadi"],snh:"Har bir qurilmaning shtrix-kodini (seriya raqamini) suratga oling.",snhCs:"Shtrix-kod rasmlarini Kassir / CS topshirishda qo‘shadi.",snAdd:"📷 Shtrix-kodni suratga olish",snRe:"🔄 Qayta olish",snUnit:(n,i,c)=>`${n} — ${c} tadan ${i}-si`,snPh:"Seriya raqami",snPhoto:"✅ Shtrix-kod rasmi biriktirildi",snUp:"Rasm yuklanmoqda…",snErr:"Rasmni yuklab bo‘lmadi",scanT:"Kamerani shtrix-kodga qarating",scanX:"Yopish",scanErr:"Kamera mavjud emas. Raqamni qo‘lda kiriting yoki rasm biriktiring (📎).",hintSn:"Barcha qurilmalarning shtrix-kod rasmlarini biriktiring.",fiz:"Jismoniy shaxs",yur:"Yuridik shaxs, QQS bilan",all:"Hammasi",inStock:n=>`Mavjud: ${n} dona`,low:" · kam qoldi",order:"Buyurtma asosida, taxminan 1 kun",none:"Mavjud emas",noBtn:"Yo‘q",
  toCart:"Savatga",orderBtn:"Buyurtma",specs:"Xususiyatlari",ask:"Narxi so‘rov bo‘yicha",over:n=>`${n} dona buyurtma asosida, taxminan 1 kunda keltiramiz`,max:n=>`Boshqa yo‘q: jami ${n} dona`,
  empty:"Savat bo‘sh",inCart:n=>`Savatda ${n} dona`,checkout:"Buyurtma berish",yours:"Buyurtmangiz",total:"Jami",close:"Yopish ✕",phone:"Mijoz telefoni",shop:"Mijoz: do‘kon / kompaniya",addr:"Yetkazish manzili",pay:"To‘lov",payO:["Naqd","Payme / Click / Paynet","O‘tkazma"],pick:"Kim olib ketadi (majburiy)",hintPick:"Naqd to‘lov: kim olib ketishini kiriting.",payNote:"Mijozga QR ni ko‘rsating yoki havolani yuboring. To‘lovdan so‘ng chekni biriktiring: cheksiz arizani yuborib bo‘lmaydi.",payOpen:"🔗 Havolani ochish",rc:"📎 To‘lov chekini biriktirish",rcUp:"Chek yuklanmoqda…",rcOk:"✅ Chek biriktirildi",rcErr:"Chekni yuklab bo‘lmadi. Qayta urinib ko‘ring.",rcDel:"O‘chirish",hintRc:"Arizani yuborish uchun to‘lov chekini biriktiring.",payCopy:"📋 Havolani nusxalash",copied2:"Nusxalandi ✓",submit:"Arizani yuborish",notTg:"Arizani yuborish uchun vitrinani BILLZ boti orqali oching.",inn:"Kompaniya STIR",
  com:"Izoh",comPh:"Shoshilinchmi, hisob-faktura kerakmi va h.k.",send:"Buyurtmani nusxalash va «Buyurtmalar» mavzusini ochish",joinQ:"BILLZ buyurtmalar guruhida hali yo‘qmisiz?",join:"Avval guruhga qo‘shiling",share:"Telegramdagi boshqa chatga yuborish",copy:"Buyurtma matnini nusxalash",copied:"Nusxalandi ✓",copyFail:"Nusxalab bo‘lmadi",
@@ -252,7 +250,7 @@ function renderStatic(){
   set("#t-h1",t.h1);set("#t-sub",t.sub);set("#m-fiz",t.fiz);set("#m-yur",t.yur);set("#openCart",t.checkout);set("#ct",t.yours);set("#t-tot",t.total);set("#close",t.close);
   set("#t-phone",t.phone);set("#t-shop",t.shop);set("#t-addr",t.addr);set("#t-pay",t.pay);set("#t-inn",t.inn);set("#t-com",t.com);set("#submit",t.submit);
   [...$("#f-pay").options].forEach((o,k)=>o.textContent=t.payO[k]);
-  $("#pay-note").textContent=t.payNote; set("#pay-open",t.payOpen); set("#pay-copy",t.payCopy); set("#t-rc",t.rc); set("#t-sn",t.sn); set("#t-hand",t.hand); [...$("#f-hand").options].forEach((o,k)=>o.textContent=t.handO[k]); set("#scan-x",t.scanX); set("#scan-t",t.scanT); set("#rc-del",t.rcDel); renderRc(); set("#t-pick",t.pick); syncPay();
+  $("#pay-note").textContent=t.payNote; set("#pay-open",t.payOpen); set("#pay-copy",t.payCopy); set("#t-rc",t.rc); set("#t-sn",t.sn); set("#t-hand",t.hand); [...$("#f-hand").options].forEach((o,k)=>o.textContent=t.handO[k]); set("#rc-del",t.rcDel); renderRc(); set("#t-pick",t.pick); syncPay();
   $("#f-com").placeholder=t.comPh; $("#foot").textContent=t.foot(STOCK_DATE); document.title=t.h1+" · BILLZ";
   if(RATE&&RATE.rate){$("#rate").hidden=false;$("#rate").innerHTML=esc(t.rateL)+": "+sumF(RATE.rate)+' <span>· bank.uz, '+esc(RATE.date||"")+"</span>"}
   $("#l-ru").setAttribute("aria-pressed",lang==="ru");$("#l-uz").setAttribute("aria-pressed",lang==="uz");
@@ -390,22 +388,7 @@ document.addEventListener("change",async e=>{const el=e.target; if(!el.dataset||
   const u=SN[k][+i]; u.state="up"; renderSn(); updSend();
   try{const s=await shrink(f); u.preview=s.preview; renderSn(); u.photo=await uploadFile(s.data); u.state="ok"}catch(err){u.state="err"; u.photo=null}
   renderSn(); updSend();});
-let scanner=null, scanTarget=null;
-function loadScanLib(){return window.Html5Qrcode?Promise.resolve():new Promise((res,rej)=>{const s=document.createElement("script");s.src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js";s.onload=res;s.onerror=rej;document.head.appendChild(s)})}
-async function openScan(k,i){
-  scanTarget=[k,+i]; $("#scan").hidden=false; $("#scan-msg").textContent="";
-  try{
-    await loadScanLib();
-    const F=Html5QrcodeSupportedFormats;
-    scanner=new Html5Qrcode("scan-v",{formatsToSupport:[F.CODE_128,F.EAN_13,F.EAN_8,F.CODE_39,F.UPC_A,F.QR_CODE,F.DATA_MATRIX],verbose:false});
-    await scanner.start({facingMode:"environment"},{fps:12,qrbox:(w,h)=>({width:Math.floor(w*0.85),height:Math.floor(Math.min(h,w)*0.45)})},txt=>{
-      const [kk,ii]=scanTarget; SN[kk][ii].sn=txt.trim(); try{tg&&tg.HapticFeedback&&tg.HapticFeedback.notificationOccurred("success")}catch(e){}
-      closeScan(); renderSn(); updSend();},()=>{});
-  }catch(err){$("#scan-msg").textContent=L().scanErr}
-}
-async function closeScan(){try{if(scanner){await scanner.stop();scanner.clear()}}catch(e){} scanner=null; $("#scan").hidden=true}
-document.addEventListener("click",e=>{const b=e.target.closest&&e.target.closest("[data-scan]"); if(b){const [k,i]=b.dataset.scan.split("|"); openScan(k,i);}});
-$("#scan-x").onclick=closeScan;
+
 $("#f-hand").addEventListener("change",()=>{renderSn();updSend()});
 $("#rc-del").onclick=()=>{RC={state:"none",token:null,preview:null};renderRc()};
 $("#pay-open").onclick=()=>{try{if(tg&&tg.openLink){tg.openLink(PAYNET_LINK);return}}catch(e){} window.open(PAYNET_LINK,"_blank")};
