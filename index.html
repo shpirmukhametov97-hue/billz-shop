@@ -125,6 +125,7 @@ footer{max-width:1180px;margin:24px auto 0;padding:0 16px;color:var(--muted);fon
 .scan-t{font-weight:700}
 #scan-v{width:100%;min-height:220px;background:#000;border-radius:10px;overflow:hidden}
 #scan-v video{width:100%!important}
+.restored{position:fixed;top:10px;left:10px;right:10px;z-index:60;background:var(--ok);color:#fff;font-weight:700;padding:12px 14px;border-radius:12px;box-shadow:0 6px 20px rgba(0,0,0,.25);font-size:14px}
 </style>
 </head>
 <body>
@@ -318,6 +319,24 @@ function renderCart(){
   updSend();
   try{localStorage.setItem("billz-cart",JSON.stringify(cart))}catch(e){}
 }
+const DRAFT_F=["shop","phone","addr","pay","inn","com","pick","hand","when"];
+function saveDraft(){try{
+  const f={}; DRAFT_F.forEach(k=>f[k]=$("#f-"+k).value);
+  const sn={}; for(const k in SN) sn[k]=SN[k].map(u=>({sn:u.sn,photo:u.photo,state:u.photo?"ok":"",preview:u.preview}));
+  localStorage.setItem("billz-draft",JSON.stringify({t:Date.now(),cart:{...cart},mode,f,sn,rc:RC.state==="ok"?RC:null}));
+}catch(e){}}
+function loadDraft(){try{
+  const d=JSON.parse(localStorage.getItem("billz-draft")||"null"); if(!d) return false;
+  if(Date.now()-d.t>6*3600*1000){localStorage.removeItem("billz-draft");return false}
+  const q=new URLSearchParams(location.search); if(q.get("restore")!=="1") return false; const bad=q.get("bad")||"";
+  for(const k in cart) delete cart[k];
+  for(const k in d.cart){const i=ITEMS.find(x=>key(x)===k); if(i) cart[k]=d.cart[k];}
+  if(d.mode==="yur"||d.mode==="fiz") mode=d.mode;
+  DRAFT_F.forEach(k=>{const el=$("#f-"+k); if(el&&d.f&&d.f[k]!=null) el.value=d.f[k];});
+  if(bad!=="sn") for(const k in d.sn||{}) SN[k]=d.sn[k];
+  if(bad!=="rc"&&d.rc&&d.rc.token) RC=d.rc;
+  return true;
+}catch(e){return false}}
 const tg=(window.Telegram&&Telegram.WebApp&&Telegram.WebApp.platform&&Telegram.WebApp.platform!=="unknown")?Telegram.WebApp:null;
 function updSend(){
   const base=lines().length&&$("#f-shop").value.trim()&&$("#f-phone").value.trim().length>=7;
@@ -337,6 +356,7 @@ function submit(){
   const payload={mode,hand,serials,delivery:needYa()?{when:$("#f-when").value}:null,items:lines().map(l=>({k:key(l.i),n:l.n})),
     client:{shop:$("#f-shop").value.trim(),phone:$("#f-phone").value.trim(),addr:$("#f-addr").value.trim(),
       pay:$("#f-pay").value,inn:mode==="yur"?$("#f-inn").value.trim():"",com:$("#f-com").value.trim(),pickup:$("#f-pay").value==="cash"?$("#f-pick").value.trim():"",receipt:$("#f-pay").value==="card"?(RC.token||""):""}};
+  saveDraft();
   for(const k in cart) delete cart[k];
   for(const k in SN) delete SN[k];
   try{localStorage.removeItem("billz-cart")}catch(e){}
@@ -422,7 +442,9 @@ try{
 if(tg){tg.ready();tg.expand();
   try{if(!localStorage.getItem("billz-lang")&&tg.initDataUnsafe.user&&tg.initDataUnsafe.user.language_code==="uz")lang="uz"}catch(e){}
   document.documentElement.setAttribute("data-theme",tg.colorScheme==="dark"?"dark":"light");}
+const RESTORED=loadDraft();
 renderAll();
+if(RESTORED){const b=document.createElement("div");b.className="restored";b.textContent=lang==="uz"?"Buyurtma tiklandi — xatoni tuzating va qayta yuboring.":"Заявка восстановлена — исправьте ошибку и отправьте снова.";document.body.prepend(b);setTimeout(()=>b.remove(),6000); $("#sheet").classList.add("on"); renderCart();}
 if(CATALOG_URL.startsWith("http")){
   fetch(CATALOG_URL+"?action=catalog").then(r=>r.json()).then(d=>{
     if(!d||!Array.isArray(d.items)||!d.items.length) return;
